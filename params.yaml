@@ -1,0 +1,14 @@
+data:
+  version: v1            # bump to v2 when you commit a new dataset version
+  path: data/raw/dataset.csv
+validate:
+  min_rows: 100
+train:
+  model: random_forest   # or logistic_regression
+  n_estimators: 150
+  max_depth: 6
+  C: 1.0
+  test_size: 0.2
+  seed: 42
+quality_gate:
+  min_f1: 0.90
