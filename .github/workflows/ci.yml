@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    env:
+      # External systems are mocked in tests; the agent runs in offline mode in CI.
+      LLM_PROVIDER: offline
+      ANTHROPIC_API_KEY: ""
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Validate Kubernetes manifests (YAML parse)
+        run: python -c "import yaml,glob; [list(yaml.safe_load_all(open(f))) for f in glob.glob('kubernetes/*.yaml')]"
+      - name: Tests (pytest)
+        run: pytest -v
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build inference image (with a placeholder model dir)
+        run: docker build -t mlops-a3-inference:ci .
