@@ -1,0 +1,96 @@
+schema: '2.0'
+stages:
+  validate:
+    cmd: python -m training.pipeline validate
+    deps:
+    - path: data/raw/dataset.csv
+      hash: md5
+      md5: bfa7a20347006b0d0bad2f6fc32f66ca
+      size: 121955
+    - path: training/pipeline.py
+      hash: md5
+      md5: cfd089533fef43b4c3ac15dd7e5b1693
+      size: 7852
+    params:
+      params.yaml:
+        validate.min_rows: 100
+    outs:
+    - path: reports/validation.json
+      hash: md5
+      md5: aa29c66d480f22339e5a1ee91aaf9f6d
+      size: 71
+  preprocess:
+    cmd: python -m training.pipeline preprocess
+    deps:
+    - path: data/raw/dataset.csv
+      hash: md5
+      md5: bfa7a20347006b0d0bad2f6fc32f66ca
+      size: 121955
+    - path: reports/validation.json
+      hash: md5
+      md5: aa29c66d480f22339e5a1ee91aaf9f6d
+      size: 71
+    - path: training/pipeline.py
+      hash: md5
+      md5: cfd089533fef43b4c3ac15dd7e5b1693
+      size: 7852
+    params:
+      params.yaml:
+        train.seed: 42
+        train.test_size: 0.2
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 3689860d22fba5ab9bb5c06e078e5756.dir
+      size: 122448
+      nfiles: 2
+  train:
+    cmd: python -m training.pipeline train
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 3689860d22fba5ab9bb5c06e078e5756.dir
+      size: 122448
+      nfiles: 2
+    - path: training/pipeline.py
+      hash: md5
+      md5: cfd089533fef43b4c3ac15dd7e5b1693
+      size: 7852
+    params:
+      params.yaml:
+        train:
+          model: random_forest
+          n_estimators: 150
+          max_depth: 6
+          C: 1.0
+          test_size: 0.2
+          seed: 42
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: e906f8f65df61348b9c0ea83ae9ec800
+      size: 450914
+  evaluate:
+    cmd: python -m training.pipeline evaluate
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 3689860d22fba5ab9bb5c06e078e5756.dir
+      size: 122448
+      nfiles: 2
+    - path: models/model.joblib
+      hash: md5
+      md5: e906f8f65df61348b9c0ea83ae9ec800
+      size: 450914
+    - path: training/pipeline.py
+      hash: md5
+      md5: cfd089533fef43b4c3ac15dd7e5b1693
+      size: 7852
+    params:
+      params.yaml:
+        quality_gate.min_f1: 0.9
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 33f24e991a654abdfcac618389c386df
+      size: 109
