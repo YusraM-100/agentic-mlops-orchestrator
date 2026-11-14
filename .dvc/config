@@ -1,0 +1,4 @@
+[core]
+    remote = localremote
+['remote "localremote"']
+    url = D:\CS-G SEMESTER 7\MLOPS\dvc-storage
