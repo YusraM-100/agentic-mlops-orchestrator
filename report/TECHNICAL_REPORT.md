@@ -43,6 +43,7 @@ Four tool modules:
 | 4 | Airflow: DAG graph (6 tasks), successful run, `evaluate_and_log` log, MLflow run tagged `pipeline=airflow` |
 | 5 | Kubernetes: `get pods,svc,configmap` (2/2 Running), `describe deployment` (probes, limits), API `/version`, `/ready`, `/predict` |
 | 6 | Agent: tool list, five scenarios, safety demo, two failure investigations |
+| 7 | GitHub Actions: PR #1 with lint-and-test and docker-build both green |
 
 **Training results**
 | Run | Data | Pipeline | F1 | Accuracy | Registry |
