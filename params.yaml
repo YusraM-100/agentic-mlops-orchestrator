@@ -1,5 +1,5 @@
 data:
-  version: v1            # bump to v2 when you commit a new dataset version
+  version: v2            # bump to v2 when you commit a new dataset version
   path: data/raw/dataset.csv
 validate:
   min_rows: 100
