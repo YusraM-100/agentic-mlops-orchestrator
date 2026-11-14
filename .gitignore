@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+# Secrets
+.env
+*.kubeconfig
+# Generated
+artifacts/
+airflow/logs/
+mlruns/
+mlflow-data/
+# DVC-managed outputs (added automatically by dvc too)
+/data/processed
+/models/model.joblib
+/models/*.joblib
