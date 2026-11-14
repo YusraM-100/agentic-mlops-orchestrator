@@ -1,0 +1,11 @@
+# Non-sensitive configuration only. Secrets never go here.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inference-config
+  namespace: mlops-a3
+data:
+  APP_VERSION: "1.0.0"
+  MODEL_VERSION: "1"          # registry version baked into the image
+  MODEL_PATH: "/app/models/model.joblib"
+  LOG_LEVEL: "INFO"
