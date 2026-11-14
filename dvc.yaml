@@ -1,0 +1,42 @@
+stages:
+  validate:
+    cmd: python -m training.pipeline validate
+    deps:
+      - data/raw/dataset.csv
+      - training/pipeline.py
+    params:
+      - validate.min_rows
+    outs:
+      - reports/validation.json:
+          cache: false
+  preprocess:
+    cmd: python -m training.pipeline preprocess
+    deps:
+      - data/raw/dataset.csv
+      - reports/validation.json
+      - training/pipeline.py
+    params:
+      - train.test_size
+      - train.seed
+    outs:
+      - data/processed
+  train:
+    cmd: python -m training.pipeline train
+    deps:
+      - data/processed
+      - training/pipeline.py
+    params:
+      - train
+    outs:
+      - models/model.joblib
+  evaluate:
+    cmd: python -m training.pipeline evaluate
+    deps:
+      - data/processed
+      - models/model.joblib
+      - training/pipeline.py
+    params:
+      - quality_gate.min_f1
+    metrics:
+      - reports/metrics.json:
+          cache: false
